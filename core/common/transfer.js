@@ -24,10 +24,10 @@ function Transfer(req, resp) {
  * default as undefined if not set£¬format£¨range: bytes=010101-£©
  * [@return](/user/return) {integer} startPos the position to read start with
  */
-Transfer.prototype._calStartPosition = function (Range) {
+Transfer.prototype._calStartPosition = function (range) {
     var startPos = 0;
-    if (typeof Range != 'undefined') {
-        var startPosMatch = /^bytes=([0-9]+)-$/.exec(Range);
+    if (typeof range != 'undefined') {
+        var startPosMatch = /^bytes=([0-9]+)-$/.exec(range);
         if (startPosMatch && startPosMatch.length > 1)
             startPos = Number(startPosMatch[1]);
     }
@@ -42,11 +42,7 @@ Transfer.prototype._configHeader = function (config) {
     var startPos = config.startPos,
         fileSize = config.fileSize,
         resp = this.resp;
-    //if (startPos != 0) {
-    //    resp.setHeader('Accept-Range', 'bytes');
-    //} else {
     resp.setHeader('Content-Range', 'bytes ' + startPos + '-' + (fileSize - 1) + '/' + fileSize);
-    //}
     resp.writeHead(PARTIAL_CODE, 'Partial Content', {
         'Content-Type': mime.lookupExtension(path.extname(this.fileName)),
         'Content-Length': fileSize - startPos,
@@ -101,7 +97,6 @@ Transfer.prototype.trans = function (filePath) {
                     start: config.startPos,
                     end: config.fileSize
                 });
-                //fReadStream.pipe(resp);
                 fReadStream.on('data', function (chunk) {
                     self.bufferedLength += chunk.length;
                     if (!resp.write(chunk, 'binary') || self._isBufferFull()) {
