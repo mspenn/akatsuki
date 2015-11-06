@@ -1,0 +1,15 @@
+<div ng-controller="GalleryCtrl">
+    <ul>
+        <li ng-repeat="item in galleryList">
+            <div class="h5">
+                <strong>Name:</strong>
+                <a ui-sref="app.player({id:item.id})" ng-bind="item.name"></a>
+            </div>
+            <div>
+                <p class="text-dark">
+                    <strong>Description:</strong><span ng-bind="item.description"></span>
+                </p>
+            </div>
+        </li>
+    </ul>
+</div>
